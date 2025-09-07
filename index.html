@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>CX Miner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@1.2.1/dist/tonconnect-sdk.min.js"></script>
+</head>
+<body>
+    <div class="app">
+        <div class="particles" id="particles"></div>
+        <div class="tap-effects" id="tapEffects"></div>
+        
+        <div class="top">
+            <div class="profile" id="profileBtn">
+                <img id="profilePic" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="">
+                <span id="usernameDisplay">User</span>
+            </div>
+            <div class="item" id="walletBtn" title="Wallet"><i class="fas fa-wallet"></i></div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="multitapStat">1</div>
+                <div class="stat-label">Multitap</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="energyRegenStat">0.5/s</div>
+                <div class="stat-label">Regen</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="totalTapsStat">0</div>
+                <div class="stat-label">Total Taps</div>
+            </div>
+        </div>
+
+        <div class="points">
+            <div class="balance">
+                <img class="logo-small" src="https://i.postimg.cc/fRwD0tzJ/Adobe-Express-file.png" alt="">
+                <span id="pointsBalance">0</span> CX
+            </div>
+        </div>
+
+        <main class="zone" id="tapperZone">
+            <div id="multiplierBadge" class="multiplier-badge" style="display: none;">2x Active</div>
+            <img id="tapperObject" class="logo-big" src="https://i.postimg.cc/fRwD0tzJ/Adobe-Express-file.png" alt="CX">
+            <div class="tapper-zone" id="tapperClickArea"></div>
+        </main>
+
+        <footer class="bottom">
+            <div class="energy-info">
+                <span><i class="fas fa-bolt"></i> Energy</span>
+                <span id="energyDisplay">100 / 100</span>
+            </div>
+            <div class="bar"><div id="energyBarFill" class="fill" style="width:100%"></div></div>
+            <div class="nav">
+                <div class="item" id="boostsBtn"><i class="fas fa-rocket"></i><span>Boosts</span></div>
+                <div class="item" id="shopBtn"><i class="fas fa-store"></i><span>Shop</span></div>
+                <div class="item" id="tasksBtn"><i class="fas fa-tasks"></i><span>Tasks</span></div>
+                <div class="item" id="friendsBtn"><i class="fas fa-users"></i><span>Friends</span></div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="sheet">
+            <div class="head"><h3>Profile</h3><button class="close" data-close>&times;</button></div>
+            <p><strong>Username:</strong> <span id="profileUsername">User</span></p>
+            <p><strong>Total CX:</strong> <span id="profileBalance">0</span></p>
+            <p><strong>Energy:</strong> <span id="profileEnergy">100 / 100</span></p>
+            <p><strong>Multitap:</strong> <span id="profileMultitap">1</span></p>
+            <p><strong>Total Taps:</strong> <span id="profileTaps">0</span></p>
+            <p><strong>Play Time:</strong> <span id="profilePlayTime">0m</span></p>
+            <div class="social-links">
+                <a href="https://t.me/CloneX_Updates" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://x.com/clonex_updates" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wallet Modal -->
+    <div class="modal" id="walletModal">
+        <div class="sheet">
+            <div class="head"><h3>My Wallet</h3><button class="close" data-close>&times;</button></div>
+            <div class="wallet-row">
+                <img class="logo-small" src="https://i.postimg.cc/fRwD0tzJ/Adobe-Express-file.png" alt="">
+                <span id="walletBalance">0</span> CX
+            </div>
+            
+            <div id="tonConnectContainer">
+                <button id="tonConnectButton" class="ton-connect-btn">Connect TON Wallet</button>
+            </div>
+            
+            <div id="walletInfo" style="display: none;">
+                <div class="wallet-address">
+                    <strong>Connected Wallet:</strong><br>
+                    <span id="connectedWalletAddress"></span>
+                </div>
+                <button class="btn" id="withdrawBtn">Withdraw CX</button>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://t.me/CloneX_Updates" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://x.com/clonex_updates" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boosts Modal -->
+    <div class="modal" id="boostsModal">
+        <div class="sheet">
+            <div class="head"><h3>Boosts</h3><button class="close" data-close>&times;</button></div>
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="boosts">Boosts</div>
+                    <div class="tab" data-tab="achievements">Achievements</div>
+                </div>
+            </div>
+            <div class="tab-content active" id="boostsTab">
+                <div id="boostList" class="list"></div>
+            </div>
+            <div class="tab-content" id="achievementsTab">
+                <div id="achievementsList" class="list"></div>
+            </div>
+            <div class="social-links">
+                <a href="https://t.me/CloneX_Updates" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://x.com/clonex_updates" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Modal -->
+    <div class="modal" id="shopModal">
+        <div class="sheet">
+            <div class="head"><h3>Shop</h3><button class="close" data-close>&times;</button></div>
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="autoTappers">Auto Tappers</div>
+                    <div class="tab" data-tab="energy">Energy</div>
+                    <div class="tab" data-tab="multipliers">Multipliers</div>
+                    <div class="tab" data-tab="tonStore">TON Store</div>
+                </div>
+            </div>
+            <div class="tab-content active" id="autoTappersTab">
+                <div id="autoTappersList" class="list"></div>
+            </div>
+            <div class="tab-content" id="energyTab">
+                <div id="energyList" class="list"></div>
+            </div>
+            <div class="tab-content" id="multipliersTab">
+                <div id="multipliersList" class="list"></div>
+            </div>
+            <div class="tab-content" id="tonStoreTab">
+                <div id="tonStoreList" class="list"></div>
+            </div>
+            <div class="social-links">
+                <a href="https://t.me/CloneX_Updates" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://x.com/clonex_updates" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Modal -->
+    <div class="modal" id="tasksModal">
+        <div class="sheet">
+            <div class="head"><h3>Tasks</h3><button class="close" data-close>&times;</button></div>
+            <div id="taskList" class="list"></div>
+            <div class="social-links">
+                <a href="https://t.me/CloneX_Updates" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://x.com/clonex_updates" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Friends Modal -->
+    <div class="modal" id="friendsModal">
+        <div class="sheet">
+            <div class="head"><h3>Invite Friends</h3><button class="close" data-close>&times;</button></div>
+            <div class="list">
+                <div class="card">
+                    <div class="info">
+                        <i class="fas fa-link"></i>
+                        <div>
+                            <div>Referral link</div>
+                            <div id="refLink" style="font-size:.9rem;opacity:.9">http://t.me/Official_CloneX_Bot/clonex?start=</div>
+                        </div>
+                    </div>
+                    <button class="btn" id="copyRef">Copy</button>
+                </div>
+                <div class="card">
+                    <div class="info">
+                        <i class="fas fa-gift"></i>
+                        <div>
+                            <div>Friends invited</div>
+                            <div style="font-size:.9rem;opacity:.9"><span id="friendsCount">0</span> friends</div>
+                        </div>
+                    </div>
+                    <div class="stat-value">+<span id="friendsBonus">0</span>%</div>
+                </div>
+                <div class="card">
+                    <div class="info">
+                        <i class="fas fa-coins"></i>
+                        <div>
+                            <div>Referral Bonus</div>
+                            <div style="font-size:.9rem;opacity:.9">Earn 10% of friends' earnings</div>
+                        </div>
+                    </div>
+                    <div class="stat-value"><span id="refEarnings">0</span> CX</div>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="https://t.me/CloneX_Updates" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://x.com/clonex_updates" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript files -->
+    <script src="js/game-state.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
