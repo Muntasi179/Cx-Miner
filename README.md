@@ -1,4 +1,4 @@
-# CX Miner
+# CloneX
 
 A Telegram-based tap-to-earn game with TON blockchain integration.
 
@@ -19,8 +19,3 @@ A Telegram-based tap-to-earn game with TON blockchain integration.
 ## Project Structure
 
 - `index.html` - Main HTML file
-- `css/style.css` - All styles
-- `js/app.js` - Main application logic
-- `js/game-state.js` - Game configuration and state
-- `js/ui.js` - UI components and modals
-- `js/ton-connect.js` - TON wallet integration
