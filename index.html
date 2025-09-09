@@ -2063,16 +2063,16 @@
             document.getElementById('walletStatusText').textContent = 'Preparing transaction...';
             
             // Create transaction
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 300, // 5 minutes
-                messages: [
-                    {
-                        address: 'UQDQY_AezcQPB7NjfguUkxIJbGzOx354mq0tQStBnZq1VpgA', // Test recipient address
-                        amount: (price * 1000000000).toString(), // Convert to nanoton
-                        payload: '' // Optional payload
-                    }
-                ]
-            };
+const transaction = {
+    validUntil: Math.floor(Date.now() / 1000) + 300, // 5 minutes
+    messages: [
+        {
+            address: 'EQDQY_AezcQPB7NjfguUkxIJbGzOx354mq0tQStBnZq1VsXF', // Your address
+            amount: (price * 1000000000).toString(), // Convert to nanoton (1 TON = 1,000,000,000 nanoton)
+            payload: '' // Optional payload
+        }
+    ]
+};
             
             // Send transaction request to wallet
             const result = await connector.sendTransaction(transaction);
