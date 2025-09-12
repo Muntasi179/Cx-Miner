@@ -1351,3 +1351,187 @@ input:checked + .toggle-slider:before {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary);
 }
+
+/* Floating text styles */
+.floating-text {
+    position: fixed;
+    font-weight: 700;
+    pointer-events: none;
+    z-index: 10001;
+    transition: all 0.8s ease-out;
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.floating-text-default {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+.floating-text-success {
+    color: var(--success);
+    font-size: 1.3rem;
+}
+
+.floating-text-error {
+    color: var(--danger);
+    font-size: 1.1rem;
+}
+
+.floating-text-premium {
+    color: gold;
+    font-size: 1.4rem;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.floating-text-social {
+    color: var(--secondary);
+    font-size: 1.2rem;
+}
+
+.floating-text-task {
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.floating-text-nav {
+    color: var(--accent);
+    font-size: 1rem;
+}
+
+/* Enhanced daily streak */
+.streak-container {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--card-border);
+    position: relative;
+}
+
+.streak-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.streak-title {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.streak-count {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-align: center;
+    margin: 10px 0;
+}
+
+.streak-progress {
+    height: 10px;
+    background: var(--bg-tertiary);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.streak-progress-bar {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+.streak-reward {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+/* Premium items in shop */
+.premium-item {
+    background: linear-gradient(135deg, var(--bg-tertiary), #2a1b45);
+    border: 1px solid gold;
+    position: relative;
+    overflow: hidden;
+}
+
+.premium-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, gold, transparent);
+    animation: premiumGlow 3s infinite;
+}
+
+@keyframes premiumGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Task items with claim buttons */
+.task-action {
+    padding: 6px 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--t);
+}
+
+.task-action:hover {
+    transform: scale(1.05);
+}
+
+.task-action.completed {
+    background: var(--text-secondary);
+    cursor: default;
+}
+
+/* Achievement badges */
+.achievement-badge {
+    display: inline-block;
+    background: var(--gradient-secondary);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* Separate coin images */
+.balance-coin {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 0 10px rgba(0, 216, 255, 0.5));
+}
+
+.mining-coin {
+    width: 40%;
+    height: auto;
+    filter: drop-shadow(0 0 15px rgba(0, 216, 255, 0.6));
+    animation: coinSpin 3s infinite linear;
+}
+
+@keyframes coinSpin {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+
+/* Fix for modal z-index to ensure floating text appears above modals */
+.modal {
+    z-index: 1000;
+}
+
+.floating-text {
+    z-index: 1001;
+}
