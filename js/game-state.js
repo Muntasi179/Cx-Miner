@@ -9,6 +9,7 @@ const GameState = {
         multitap: 1,
         totalTaps: 0,
         level: 1,
+        experience: 0,
         multiplierActive: false,
         multiplierTime: 0,
         walletConnected: false,
@@ -23,10 +24,11 @@ const GameState = {
         tapCooldown: 100,
         streakCount: 0,
         lastStreakClaim: null,
+        achievements: [],
         notifications: [
             {
                 id: 1,
-                title: "Welcome to CX Miner!",
+                title: "Welcome to CloneX!",
                 message: "Start tapping to earn CX coins. Connect your wallet to purchase boosts.",
                 time: new Date().toISOString(),
                 read: false
@@ -63,13 +65,13 @@ const GameState = {
 
     // Save game state to localStorage
     save() {
-        localStorage.setItem('cxMiner_save', JSON.stringify(this.data));
+        localStorage.setItem('cloneX_save', JSON.stringify(this.data));
         this.data.lastSave = Date.now();
     },
 
     // Load game state from localStorage
     load() {
-        const saved = localStorage.getItem('cxMiner_save');
+        const saved = localStorage.getItem('cloneX_save');
         if (saved) {
             try {
                 const savedState = JSON.parse(saved);
@@ -90,6 +92,45 @@ const GameState = {
     updateEnergy(amount) {
         this.data.energy = Math.max(0, Math.min(this.data.maxEnergy, this.data.energy + amount));
         this.save();
+    },
+
+    // Add experience and check for level up
+    addExperience(amount) {
+        this.data.experience += amount;
+        
+        // Check for level up (100 XP per level)
+        const xpNeeded = this.data.level * 100;
+        if (this.data.experience >= xpNeeded) {
+            this.data.level++;
+            this.data.experience = this.data.experience - xpNeeded;
+            this.data.starBalance += 5;
+            
+            // Award level up bonus
+            this.data.points += this.data.level * 50;
+            
+            return true;
+        }
+        return false;
+    },
+
+    // Unlock achievement
+    unlockAchievement(id, name, description, reward) {
+        if (!this.data.achievements.find(a => a.id === id)) {
+            this.data.achievements.push({
+                id,
+                name,
+                description,
+                unlocked: new Date().toISOString(),
+                reward
+            });
+            
+            // Award achievement reward
+            this.data.points += reward;
+            this.data.starBalance += Math.floor(reward / 100);
+            
+            return true;
+        }
+        return false;
     },
 
     // Check for level up
@@ -161,7 +202,7 @@ const GameState = {
         // Deduct cost
         if (currency === 'cx') {
             this.data.points -= price;
-        } else {
+        } else if (currency === 'stars') {
             this.data.starBalance -= price;
         }
         
@@ -197,6 +238,17 @@ const GameState = {
                 break;
             case 'superEnergy':
                 this.data.maxEnergy += 50;
+                break;
+            case 'premiumBoost':
+                this.data.multitap += 5;
+                this.data.points += 10000;
+                break;
+            case 'ultimateEnergy':
+                this.data.maxEnergy += 100;
+                this.data.energyRegen *= 2;
+                break;
+            case 'starMultiplier':
+                // This would be a multiplier applied during point calculation
                 break;
         }
     },
