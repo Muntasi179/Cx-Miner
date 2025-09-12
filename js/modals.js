@@ -4,6 +4,7 @@ const Modals = {
     init() {
         this.setupModalListeners();
         this.setupPurchaseHandlers();
+        this.setupSocialTaskHandlers();
     },
     
     // Setup modal event listeners
@@ -16,12 +17,16 @@ const Modals = {
         ];
         
         closeButtons.forEach(id => {
-            document.getElementById(id).addEventListener('click', () => {
-                const modal = document.getElementById(id.replace('close', '').replace('Modal', 'Modal'));
-                if (modal) {
-                    modal.classList.remove('show');
-                }
-            });
+            const button = document.getElementById(id);
+            if (button) {
+                button.addEventListener('click', () => {
+                    const modalId = id.replace('close', '');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('show');
+                    }
+                });
+            }
         });
         
         // Close modal when clicking outside
@@ -33,7 +38,7 @@ const Modals = {
             });
         });
         
-        // Modal close buttons
+        // Modal close buttons (X buttons)
         document.querySelectorAll('.modal-close').forEach(button => {
             button.addEventListener('click', function() {
                 const modal = this.closest('.modal');
@@ -52,11 +57,14 @@ const Modals = {
         });
         
         // Clear notifications
-        document.getElementById('clearNotifications').addEventListener('click', () => {
-            GameState.data.notifications = [];
-            UI.updateNotifications();
-            GameState.save();
-        });
+        const clearNotificationsBtn = document.getElementById('clearNotifications');
+        if (clearNotificationsBtn) {
+            clearNotificationsBtn.addEventListener('click', () => {
+                GameState.data.notifications = [];
+                UI.updateNotifications();
+                GameState.save();
+            });
+        }
     },
     
     // Setup purchase handlers
@@ -98,12 +106,21 @@ const Modals = {
                 }
             });
         });
-        
-        // Social tasks
+    },
+    
+    // Setup social task handlers
+    setupSocialTaskHandlers() {
         document.querySelectorAll('.social-action').forEach(action => {
             action.addEventListener('click', function() {
                 const url = this.getAttribute('data-url');
                 window.open(url, '_blank');
                 
                 // Award points for completing social task
-                GameState.data.p
+                GameState.data.points += 50;
+                UI.updatePointsDisplay();
+                UI.showToast('+50 CX for completing task!', 'success');
+                GameState.save();
+            });
+        });
+    }
+};
