@@ -160,12 +160,3 @@
 .modal.show {
     display: flex;
 }
-
-/* Prevent flash by initially hiding modals */
-.modal {
-    display: none;
-}
-
-.modal.show {
-    display: flex;
-}
