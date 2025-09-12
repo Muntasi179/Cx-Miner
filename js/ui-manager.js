@@ -4,6 +4,32 @@ const UI = {
     init() {
         this.updateAllDisplays();
         this.setupEventListeners();
+        this.checkAchievements();
+    },
+    
+    // Check and unlock achievements
+    checkAchievements() {
+        // First tap achievement
+        if (GameState.data.totalTaps >= 1 && !GameState.data.achievements.find(a => a.id === 'first_tap')) {
+            GameState.unlockAchievement('first_tap', 'First Tap', 'Tap the mining core for the first time', 50);
+            this.showToast('Achievement Unlocked: First Tap! +50 CX', 'success');
+        }
+        
+        // 100 taps achievement
+        if (GameState.data.totalTaps >= 100 && !GameState.data.achievements.find(a => a.id === 'hundred_taps')) {
+            GameState.unlockAchievement('hundred_taps', 'Hundred Taps', 'Reach 100 total taps', 200);
+            this.showToast('Achievement Unlocked: Hundred Taps! +200 CX', 'success');
+        }
+        
+        // Level 5 achievement
+        if (GameState.data.level >= 5 && !GameState.data.achievements.find(a => a.id === 'level_five')) {
+            GameState.unlockAchievement('level_five', 'Level 5', 'Reach level 5', 500);
+            this.showToast('Achievement Unlocked: Level 5! +500 CX', 'success');
+        }
+        
+        // Update displays if any achievements were unlocked
+        this.updatePointsDisplay();
+        this.updateWalletDisplay();
     },
     
     // Update all UI displays
@@ -354,24 +380,28 @@ const UI = {
             pointsEarned *= 2;
         }
         
-        // Add points
+        // Add points and experience
         GameState.data.points += pointsEarned;
         GameState.data.totalTaps += 1;
+        
+        // Add experience (1 XP per tap)
+        if (GameState.addExperience(1)) {
+            // Level up occurred
+            UI.updateLevelDisplay();
+            UI.updateWalletDisplay();
+            UI.showToast(`Level Up! You're now level ${GameState.data.level}`, 'success', 'Congratulations!');
+            UI.showToast(`+5 Stars for leveling up!`, 'success');
+        }
         
         // Update displays
         UI.updatePointsDisplay();
         UI.updateTotalTapsDisplay();
         
         // Show earning text
-        UI.showToast(`+${pointsEarned} CX`, 'success');
+        Effects.createFloatingText(e.clientX, e.clientY, `+${pointsEarned} CX`, "success");
         
-        // Check for level up
-        if (GameState.checkLevelUp()) {
-            UI.updateLevelDisplay();
-            UI.updateWalletDisplay();
-            UI.showToast(`Level Up! You're now level ${GameState.data.level}`, 'success', 'Congratulations!');
-            UI.showToast(`+5 Stars for leveling up!`, 'success');
-        }
+        // Check for achievements
+        this.checkAchievements();
         
         // Save game state
         GameState.save();
@@ -387,15 +417,12 @@ const UI = {
     
     // Share profile using Web Share API
     shareProfile() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'CloneX', // Changed from 'CX Miner'
-            text: 'Check out my CloneX profile!', // Changed from 'CX Miner'
-            url: document.getElementById('referralInput').value
-        })
-        // ... rest of the method
-    }
-}
+        if (navigator.share) {
+            navigator.share({
+                title: 'CloneX',
+                text: 'Check out my CloneX profile!',
+                url: document.getElementById('referralInput').value
+            })
             .catch(error => {
                 console.log('Error sharing:', error);
                 UI.showToast('Sharing failed. Link copied to clipboard.', 'error');
