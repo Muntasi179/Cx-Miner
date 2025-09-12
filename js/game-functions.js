@@ -22,7 +22,7 @@ const GameFunctions = {
         
         // Show welcome message
         setTimeout(() => {
-            UI.showToast('Welcome to CX Miner! Tap the core to earn CX', 'info', 'Welcome');
+            UI.showToast('Welcome to CloneX! Tap the core to earn CX', 'info', 'Welcome');
         }, 1000);
     },
     
