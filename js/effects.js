@@ -42,6 +42,29 @@ const Effects = {
         }
     },
     
+    // Create floating text effect
+    createFloatingText(x, y, text, type = "default") {
+        if (GameState.data.reduceAnimations) return;
+        
+        const floatingText = document.createElement('div');
+        floatingText.className = `floating-text floating-text-${type}`;
+        floatingText.textContent = text;
+        floatingText.style.left = `${x}px`;
+        floatingText.style.top = `${y}px`;
+        
+        document.body.appendChild(floatingText);
+        
+        // Animate
+        setTimeout(() => {
+            floatingText.style.transform = 'translateY(-30px)';
+            floatingText.style.opacity = '0';
+        }, 10);
+        
+        setTimeout(() => {
+            floatingText.remove();
+        }, 1000);
+    },
+    
     // Play sound effect
     playSound() {
         if (!GameState.data.soundEnabled) return;
