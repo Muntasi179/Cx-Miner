@@ -387,12 +387,15 @@ const UI = {
     
     // Share profile using Web Share API
     shareProfile() {
-        if (navigator.share) {
-            navigator.share({
-                title: 'CX Miner',
-                text: 'Check out my CX Miner profile!',
-                url: document.getElementById('referralInput').value
-            })
+    if (navigator.share) {
+        navigator.share({
+            title: 'CloneX', // Changed from 'CX Miner'
+            text: 'Check out my CloneX profile!', // Changed from 'CX Miner'
+            url: document.getElementById('referralInput').value
+        })
+        // ... rest of the method
+    }
+}
             .catch(error => {
                 console.log('Error sharing:', error);
                 UI.showToast('Sharing failed. Link copied to clipboard.', 'error');
